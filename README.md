@@ -29,7 +29,7 @@ After reading the exercise, I went to terminal and started a new api project wit
 
 So, I reacreted the app with:
 ```
-rais new social-networks --api --skip-active-record
+rais new social-networks --api --skip-active-record -T
 ```
 And then created a new controller with `index` view with the command:
 ```
