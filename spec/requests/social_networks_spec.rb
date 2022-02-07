@@ -2,33 +2,40 @@ require 'rails_helper'
 
 RSpec.describe 'SocialNetworks', type: :request do
   describe 'GET /index' do
-    before { get root_path }
-
-    it 'returns http success' do
-      expect(response).to have_http_status(:success)
+    before :each do
+      get root_path
     end
 
-    it 'returns all social networks' do
-      tweets = [
-        %(If you live to be 100, you should make up some fake reason why, just to mess with people... like claim you ate
-         a pinecone every single day.),
-        %(STOP TELLING ME YOUR NEWBORN'S WEIGHT AND LENGTH I DON'T KNOW WHAT TO DO WITH THAT INFORMATION.),
-      ]
+    describe 'with success api consume', status: :success do
+      it 'returns http success' do
+        expect(response).to have_http_status(:success)
+      end
 
-      statuses = [
-        %(Here's some photos of my holiday. Look how much more fun I'm having than you are!),
-        %(I am in a hospital. I will not tell you anything about why I am here.),
-      ]
+      it 'returns all social networks' do
+        tweets = %w[message_01 message_02]
+        statuses = %w[status_01 status_02]
+        photos = %w[food coffee]
 
-      photos = [
-        %(food),
-        %(coffee),
-        %(coffee),
-        %(food),
-        %(this one is of a cat),
-      ]
+        res = JSON.parse(response.body, symbolize_names: true)
 
-      expect(JSON.parse(response.body)).to eq({ twitter: tweets, facebook: statuses, instagram: photos })
+        expect(res[:twitter]).to eq(tweets)
+        expect(res[:facebook]).to eq(statuses)
+        expect(res[:instagram]).to eq(photos)
+      end
+    end
+
+    describe 'with failing api consume', status: :fail do
+      it 'returns http success' do
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'returns empty arrays for all social networks' do
+        res = JSON.parse(response.body, symbolize_names: true)
+
+        expect(res[:twitter]).to eq([])
+        expect(res[:facebook]).to eq([])
+        expect(res[:instagram]).to eq([])
+      end
     end
   end
 end
